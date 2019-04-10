@@ -1,14 +1,10 @@
-//
 //  AppDelegate.swift
 //  NewWheaterApp
-//
 //  Created by mohamed mahmoud zead on 3/11/18.
 //  Copyright © 2018 Mac. All rights reserved.
-//
 
 import UIKit
 import CoreData
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
