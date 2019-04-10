@@ -26,14 +26,12 @@ class WheatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource ,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
-        locationManager.startMonitoringSignificantLocationChanges()
-        
-        tableView.delegate = self
-        tableView.dataSource = self
+        locationManager.startUpdatingLocation()
+        tableview.delegate = self
+        tableview.dataSource = self
         currentWeather = CurrentWeather()
         
     }
@@ -47,19 +45,23 @@ class WheatherVC: UIViewController, UITableViewDelegate, UITableViewDataSource ,
         return .lightContent
     }
     
-    func locationAuthStatus() {
-        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
-            currentLocation = locationManager.location
-            Location.sharedInstance.latitude = currentLocation.coordinate.latitude
-            Location.sharedInstance.langitude = currentLocation.coordinate.longitude
-            currentWeather.downloadWeatherDetails {
-                self.downloadForecastData {
-                    self.updateMainUI()
-                }
-            }
-        } else {
+    func locationAuthStatus(){
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse{
+            locationManager.startUpdatingLocation()
+        }else{
             locationManager.requestWhenInUseAuthorization()
             locationAuthStatus()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        currentLocation = locations[0]
+        Location.sharedInstance.latitude = currentLocation.coordinate.latitude
+        Location.sharedInstance.langitude = currentLocation.coordinate.longitude
+        currentWeather.downloadWeatherDetails {
+            self.downloadForecastData{
+                self.updateMainUI()
+            }
         }
     }
     
